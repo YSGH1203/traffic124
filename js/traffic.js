@@ -32,7 +32,7 @@ map = null;
 barAcciHour = null;
 initMap = function () {
   map = L.map("map", {
-    center: [24.80363496720421, 120.96827655517575],
+    center: [25.037583, 121.5637],
     zoom: 12,
     zoomControl: true,
   });
@@ -343,16 +343,10 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
       ttl: "地理交叉篩選",
       txt: "反過來也行，放大地圖任何區域，圖表會跟著更新。現在顯示的是火車站周邊。（點擊切換另一個地理篩選）",
       act: function () {
-        map.setZoom(13);
+        map.setView({ lat: 25.047675, lng: 121.517055 }, 14);
         return setTimeout(function () {
-          map.setZoom(14);
-          return setTimeout(function () {
-            map.setZoom(15);
-            return setTimeout(function () {
-              return map.setZoom(16);
-            }, 100);
-          }, 100);
-        }, 100);
+          return map.setZoom(15);
+        }, 150);
       },
     },
     {
@@ -360,8 +354,8 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
       txt: "現在我們移到交大附近。</br></br>程式化產生的視覺化有個好處：開發一次後，只要換資料就能快速得到最新圖表。</br></br>開始自己探索吧！用左側縮放滑桿或方向箭頭，也能直接拖曳地圖在城市中移動。",
       act: function () {
         return map.panTo({
-          lat: 24.799232620011438,
-          lng: 120.98143010818478,
+          lat: 25.033968,
+          lng: 121.564468,
         });
       },
     },
