@@ -1,29 +1,29 @@
-# Traffic Accident Visualization
+# 交通事故視覺化
 
-This project visualizes traffic accidents in Xinzhu, Taiwan using D3, DC.js, Crossfilter, and the Google Maps JavaScript API. The visualization is fully client-side and reads data from `accidentXY.tsv`/`accidentXY_light.tsv`.
+這個專案使用 D3、DC.js、Crossfilter 與 Google Maps JavaScript API，視覺化台灣新竹地區的交通事故資料。整個介面完全在瀏覽器端運作，並從 `accidentXY.tsv`／`accidentXY_light.tsv` 讀取資料。
 
-## Files
-- `index.html` – page markup and third-party includes.
-- `css/traffic.css` – styling for the map, navigation, and filter controls.
-- `js/traffic.js` – client-side logic for maps, charts, and navigation text.
-- `accidentXY.tsv` and `accidentXY_light.tsv` – tabular datasets consumed by the page.
+## 檔案說明
+- `index.html`：網頁結構與第三方套件引用。
+- `css/traffic.css`：地圖、導覽與篩選控制元件的樣式。
+- `js/traffic.js`：地圖、圖表與導覽文字的前端邏輯。
+- `accidentXY.tsv`、`accidentXY_light.tsv`：頁面讀取的表格資料集。
 
-## Running locally
-No build step is required. Serve the repository root as static files and open `index.html` in a browser:
+## 本機執行
+不需要建置流程。將儲存庫根目錄作為靜態檔案啟動伺服器，直接在瀏覽器開啟 `index.html`：
 
 ```sh
 python -m http.server 8000
-# then browse to http://localhost:8000/
+# 然後前往 http://localhost:8000/
 ```
 
-The page loads data directly from the TSV files and requires internet access for external libraries and Google Maps.
+頁面會直接載入 TSV 檔案，外部套件與 Google Maps 需要網際網路連線。
 
-## Deploying to GitHub Pages
-The site is ready to publish from the repository root on the `main` branch.
+## 部署到 GitHub Pages
+網站可以直接從 `main` 分支的儲存庫根目錄發布。
 
-1. Ensure GitHub Pages is enabled with source set to “Deploy from a branch” and folder `/` on `main`.
-2. Push to `main`; the included workflow (`.github/workflows/pages.yml`) uploads the root directory and publishes it to the GitHub Pages environment.
-3. Access the site at `https://<your-user>.github.io/traffic/` (replace `traffic` if the repository name differs).
+1. 啟用 GitHub Pages，來源設定為「Deploy from a branch」，資料夾選擇 `main` 分支的 `/`。
+2. 推送至 `main`；隨附的工作流程（`.github/workflows/pages.yml`）會上傳根目錄並發布至 GitHub Pages 環境。
+3. 造訪 `https://<your-user>.github.io/traffic/`（如果儲存庫名稱不同，請替換 `traffic`）。
 
-## Development workflow
-LiveScript, Stylus, and Jade sources have been removed. Make changes directly in the formatted HTML, JS, and CSS files listed above. There is no longer a Gulp pipeline; if you prefer automation (for example, formatting), add npm scripts instead of reintroducing the old Gulp tasks.
+## 開發流程
+LiveScript、Stylus 與 Jade 原始碼已移除，請直接修改排版後的 HTML、JS 與 CSS 檔案。如需自動化流程（例如格式化），建議新增 npm script，而非重新導入舊的 Gulp 工作。
