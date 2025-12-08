@@ -23,7 +23,7 @@ colorDeadScale = d3.scale.ordinal().range([colorDead]);
 colorAcciScale = d3.scale.ordinal().range([colorAcci]);
 lngDim = null;
 latDim = null;
-weekDayTable = ["Sun.", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat."];
+weekDayTable = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
 gPrints = null;
 monthDim = null;
 weekdayDim = null;
@@ -285,13 +285,13 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
   updateGraph();
   navls = [
     {
-      ttl: "Accident Crossfilter",
-      txt: "Accidents from Taipei City in 2024 (113年) are visualized here – a total of 51,810 reported cases and 223 deaths. Orange represents all accidents, and red are accidents where death occurred. </br></br>(Click here to start navigation.)",
+      ttl: "事故交叉篩選",
+      txt: "這裡呈現 2013 年 1–10 月新竹地區的交通事故，共 13,200 件、超過 25 起死亡。橘色代表事故，紅色代表發生死亡的事故。</br></br>（點擊此區開始導覽。）",
       act: function () {},
     },
     {
-      ttl: "Death by Month – 2024",
-      txt: "Monthly statistics for Taipei: orange represents accidents, and red shows accidents involving death. Use the bars to focus on specific months. (Click here for Day of the Week)",
+      ttl: "2013 年每月死亡數",
+      txt: "下方為每月統計：橘色代表事故，紅色代表死亡事故。可以看到 4 月沒有死亡案例，但事故量仍然偏高。（點擊前往「星期別」）",
       act: function () {
         return d3.selectAll(".fltWeek, .fltHour").transition().style({
           opacity: 0.2,
@@ -299,8 +299,8 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
       },
     },
     {
-      ttl: "Day of the Week",
-      txt: "Accidents on days of the week can be compared here; click any bar to filter the map and other charts. (Click here for Hour of the Day)",
+      ttl: "星期別",
+      txt: "各星期的事故數相當平均，不過在資料中週一沒有死亡事故。（點擊前往「時段」）",
       act: function () {
         d3.selectAll(".fltMonth, .fltHour").transition().style({
           opacity: 0.2,
@@ -311,8 +311,8 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
       },
     },
     {
-      ttl: "Hour of the Day",
-      txt: "Compare how activity and severity shift over the 24-hour day. Late-night and early-morning crashes can be isolated by brushing the chart.</br></br>This is interesting, but where exactly are these accidents? (Click here to find out)",
+      ttl: "時段",
+      txt: "晚上 7 點後事故逐漸減少，0–7 點最低。但從死亡事故看，0–7 點卻相當致命。要降低死亡事故，這段時間是好的切入點。</br></br>想知道這些事故在哪裡嗎？（點擊看看）",
       act: function () {
         d3.selectAll(".fltMonth, .fltWeek").transition().style({
           opacity: 0.2,
@@ -323,8 +323,8 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
       },
     },
     {
-      ttl: "Analysis with a Click",
-      txt: "If you drag your mouse from 0 am to 7 am, the accidents in that window are highlighted on the map. Notice that the week and month charts are updated according to your action. (Click here for Crossfilter)",
+      ttl: "點一下就分析",
+      txt: "將滑鼠拖曳選取 0–7 點，地圖會高亮對應的事故（約 1 秒內回應），週與月的圖表也會同步更新。（點擊前往「交叉篩選」）",
       act: function () {
         d3.selectAll(".filter").transition().style({
           opacity: 1,
@@ -333,15 +333,15 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
       },
     },
     {
-      ttl: "Crossfilter",
-      txt: "You can also select multiple criteria, such as the accidents that happened from 0 am to 7 am on weekends. For these criteria, drag your mouse for the timeframe and then click on Saturday and Sunday. (Click here for Geo-Crossfilter)",
+      ttl: "交叉篩選",
+      txt: "也能套用多重條件，例如篩選 0–7 點且假日的事故：先拖曳時間區間，再點選週六、週日。（點擊前往「地理交叉篩選」）",
       act: function () {
-        return weekdayDim.filter(["Sat.", "Sun."]);
+        return weekdayDim.filter(["週六", "週日"]);
       },
     },
     {
-      ttl: "Geo-Crossfilter",
-      txt: "This also works the other way: zoom into any part of the map and the charts will update accordingly. Now we are viewing the area around Taipei Main Station. (Click here for another Geo-Crossfilter)",
+      ttl: "地理交叉篩選",
+      txt: "反過來也行，放大地圖任何區域，圖表會跟著更新。現在顯示的是火車站周邊。（點擊切換另一個地理篩選）",
       act: function () {
         map.setView({ lat: 25.047675, lng: 121.517055 }, 14);
         return setTimeout(function () {
@@ -350,8 +350,8 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
       },
     },
     {
-      ttl: "Geo-Crossfilter",
-      txt: "Now we’re around Taipei 101.</br></br>The benefit of programming-generated visualization is that once developed, we just feed in different data to generate an up-to-date graph.</br></br>Start exploring on your own! Zoom in and out using the controls, or drag the map itself from one part of the city to another.",
+      ttl: "地理交叉篩選",
+      txt: "現在我們移到交大附近。</br></br>程式化產生的視覺化有個好處：開發一次後，只要換資料就能快速得到最新圖表。</br></br>開始自己探索吧！用左側縮放滑桿或方向箭頭，也能直接拖曳地圖在城市中移動。",
       act: function () {
         return map.panTo({
           lat: 25.033968,
