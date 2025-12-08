@@ -4,10 +4,6 @@ var colorDead,
   colorAcciScale,
   lngDim,
   latDim,
-  projection,
-  overlay,
-  padding,
-  mapOffset,
   weekDayTable,
   gPrints,
   monthDim,
@@ -15,9 +11,7 @@ var colorDead,
   hourDim,
   map,
   barAcciHour,
-  styledMap,
   initMap,
-  transform,
   ifdead,
   setCircle,
   initCircle,
@@ -29,10 +23,6 @@ colorDeadScale = d3.scale.ordinal().range([colorDead]);
 colorAcciScale = d3.scale.ordinal().range([colorAcci]);
 lngDim = null;
 latDim = null;
-projection = null;
-overlay = null;
-padding = 5;
-mapOffset = 4000;
 weekDayTable = ["Sun.", "Mon.", "Tue.", "Wed.", "Thu.", "Fri.", "Sat."];
 gPrints = null;
 monthDim = null;
@@ -40,207 +30,32 @@ weekdayDim = null;
 hourDim = null;
 map = null;
 barAcciHour = null;
-styledMap = new google.maps.StyledMapType(
-  [
-    {
-      featureType: "water",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 17,
-        },
-      ],
-    },
-    {
-      featureType: "landscape",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 20,
-        },
-      ],
-    },
-    {
-      featureType: "road.highway",
-      elementType: "geometry.fill",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 17,
-        },
-      ],
-    },
-    {
-      featureType: "road.highway",
-      elementType: "geometry.stroke",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          weight: 0.2,
-        },
-        {
-          lightness: 29,
-        },
-      ],
-    },
-    {
-      featureType: "road.arterial",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 18,
-        },
-      ],
-    },
-    {
-      featureType: "road.local",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 16,
-        },
-      ],
-    },
-    {
-      featureType: "poi",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 21,
-        },
-      ],
-    },
-    {
-      featureType: "all",
-      elementType: "labels.text.stroke",
-      stylers: [
-        {
-          visibility: "on",
-        },
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 16,
-        },
-      ],
-    },
-    {
-      featureType: "all",
-      elementType: "labels.text.fill",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 40,
-        },
-      ],
-    },
-    {
-      featureType: "all",
-      elementType: "labels.icon",
-      stylers: [
-        {
-          visibility: "off",
-        },
-      ],
-    },
-    {
-      featureType: "transit",
-      elementType: "geometry",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 19,
-        },
-      ],
-    },
-    {
-      featureType: "administrative",
-      elementType: "geometry.fill",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          lightness: 20,
-        },
-      ],
-    },
-    {
-      featureType: "administrative",
-      elementType: "geometry.stroke",
-      stylers: [
-        {
-          color: "#000000",
-        },
-        {
-          weight: 1.2,
-        },
-        {
-          lightness: 17,
-        },
-      ],
-    },
-  ],
-  {
-    name: "Styled Map",
-  },
-);
 initMap = function () {
-  map = new google.maps.Map(d3.select("#map").node(), {
+  map = L.map("map", {
+    center: [24.80363496720421, 120.96827655517575],
     zoom: 12,
-    center: new google.maps.LatLng(24.80363496720421, 120.96827655517575),
-    mapTypeControlOptions: {
-      mapTypeId: [google.maps.MapTypeId.ROADMAP, "map_style"],
-    },
+    zoomControl: true,
   });
-  google.maps.event.addListener(map, "bounds_changed", function () {
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> contributors",
+  }).addTo(map);
+  L.svg().addTo(map);
+  gPrints = d3
+    .select(map.getPanes().overlayPane)
+    .select("svg")
+    .append("g")
+    .attr("class", "leaflet-zoom-hide");
+  map.on("moveend", function () {
     var bounds, northEast, southWest;
-    bounds = this.getBounds();
+    bounds = map.getBounds();
     northEast = bounds.getNorthEast();
     southWest = bounds.getSouthWest();
-    console.log([
-      (southWest.lng() + northEast.lng()) / 2,
-      (southWest.lat() + northEast.lat()) / 2,
-    ]);
-    lngDim.filterRange([southWest.lng(), northEast.lng()]);
-    latDim.filterRange([southWest.lat(), northEast.lat()]);
+    lngDim.filterRange([southWest.lng, northEast.lng]);
+    latDim.filterRange([southWest.lat, northEast.lat]);
+    updateGraph();
     return dc.redrawAll();
   });
-  map.mapTypes.set("map_style", styledMap);
-  map.setMapTypeId("map_style");
-  return overlay.setMap(map);
-};
-transform = function (d) {
-  d = new google.maps.LatLng(d.GoogleLat, d.GoogleLng);
-  d = projection.fromLatLngToDivPixel(d);
-  return d3
-    .select(this)
-    .style("left", d.x - padding + "px")
-    .style("top", d.y - padding + "px");
 };
 ifdead = function (it, iftrue, iffalse) {
   if (it.dead > 0) {
@@ -253,10 +68,10 @@ setCircle = function (it) {
   return it
     .attr({
       cx: function (it) {
-        return it.coorx;
+        return map.latLngToLayerPoint([it.GoogleLat, it.GoogleLng]).x;
       },
       cy: function (it) {
-        return it.coory;
+        return map.latLngToLayerPoint([it.GoogleLat, it.GoogleLng]).y;
       },
       r: function (it) {
         return ifdead(it, "5px", "2.5px");
@@ -327,53 +142,6 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
     }
     return true;
   });
-  overlay = new google.maps.OverlayView();
-  overlay.onAdd = function () {
-    var layer, svg;
-    layer = d3
-      .select(this.getPanes().overlayLayer)
-      .append("div")
-      .attr("class", "stationOverlay");
-    svg = layer.append("svg");
-    gPrints = svg.append("g").attr({
-      class: "class",
-      gPrints: "gPrints",
-    });
-    svg
-      .attr({
-        width: mapOffset * 2,
-        height: mapOffset * 2,
-      })
-      .style({
-        position: "absolute",
-        top: -1 * mapOffset + "px",
-        left: -1 * mapOffset + "px",
-      });
-    return (overlay.draw = function () {
-      var googleMapProjection, dt;
-      projection = this.getProjection();
-      googleMapProjection = function (coordinates) {
-        var googleCoordinates, pixelCoordinates;
-        googleCoordinates = new google.maps.LatLng(
-          coordinates[0],
-          coordinates[1],
-        );
-        pixelCoordinates = projection.fromLatLngToDivPixel(googleCoordinates);
-        return [pixelCoordinates.x + mapOffset, pixelCoordinates.y + mapOffset];
-      };
-      tsvBody.filter(function (it) {
-        var coor;
-        coor = googleMapProjection([it.GoogleLat, it.GoogleLng]);
-        it.coorx = coor[0];
-        it.coory = coor[1];
-        return true;
-      });
-      dt = gPrints.selectAll("circle").data(tsvBody);
-      dt.enter().append("circle").call(setCircle);
-      dt.call(setCircle);
-      return dt.exit().remove();
-    });
-  };
   barPerMonth = dc.barChart("#DeathMonth");
   barPerWeekDay = dc.barChart("#DeathWeekDay");
   barPerHour = dc.barChart("#DeathHour");
@@ -397,6 +165,7 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
   latDim = ndx.dimension(function (it) {
     return it.GoogleLat;
   });
+  initMap();
   acciMonth = monthDim.group().reduceCount();
   acciWeekDay = weekdayDim.group().reduceCount();
   acciHour = hourDim.group().reduceCount();
@@ -511,7 +280,7 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
     .yAxis()
     .ticks(4);
   dc.renderAll();
-  initMap();
+  updateGraph();
   navls = [
     {
       ttl: "Accident Crossfilter",
