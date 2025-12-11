@@ -1,12 +1,13 @@
 # 交通事故視覺化
 
-這個專案使用 D3、DC.js、Crossfilter 與 Google Maps JavaScript API，視覺化台灣新竹地區的交通事故資料。整個介面完全在瀏覽器端運作，並從 `accidentXY.tsv`／`accidentXY_light.tsv` 讀取資料。
+這個專案使用 D3、DC.js、Crossfilter 與 Google Maps JavaScript API，視覺化台灣的交通事故資料。整個介面完全在瀏覽器端運作，並從 `accidentXY_113.tsv`（113 年台北市 A1 / A2 事故資料）或較小的 `accidentXY_light.tsv` 讀取資料。
 
 ## 檔案說明
 - `index.html`：網頁結構與第三方套件引用。
 - `css/traffic.css`：地圖、導覽與篩選控制元件的樣式。
 - `js/traffic.js`：地圖、圖表與導覽文字的前端邏輯。
-- `accidentXY.tsv`、`accidentXY_light.tsv`：頁面讀取的表格資料集。
+- `accidentXY_113.tsv`：自 `113年-臺北市A1及A2類交通事故明細 (1).csv` 整理、去重後的 UTF-8 TSV 檔（每列 1 起事故）。
+- `accidentXY_light.tsv`：示範用途的輕量資料集。
 
 ## 本機執行
 不需要建置流程。將儲存庫根目錄作為靜態檔案啟動伺服器，直接在瀏覽器開啟 `index.html`：
