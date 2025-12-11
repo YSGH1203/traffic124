@@ -16,7 +16,10 @@ var colorDead,
   setCircle,
   initCircle,
   tranCircle,
-  updateGraph;
+  updateGraph,
+  dataTable,
+  dataTableDim,
+  formatDateTime;
 colorDead = "#de2d26";
 colorAcci = "rgb(255, 204, 0)";
 colorDeadScale = d3.scale.ordinal().range([colorDead]);
@@ -65,6 +68,20 @@ ifdead = function (it, iftrue, iffalse) {
   } else {
     return iffalse;
   }
+};
+formatDateTime = function (it) {
+  var pad;
+  pad = function (n) {
+    return ("0" + n).slice(-2);
+  };
+  return (
+    it["年"] + "年" +
+    it["月"] + "月" +
+    it["日"] + "日 " +
+    pad(it["時"]) +
+    ":" +
+    pad(it["分"])
+  );
 };
 setCircle = function (it) {
   return it
@@ -117,6 +134,7 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
     barAcciWeekDay,
     ndx,
     all,
+    coordFormatter,
     acciMonth,
     acciWeekDay,
     acciHour,
@@ -150,8 +168,10 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
   barAcciMonth = dc.barChart("#AcciMonth");
   barAcciWeekDay = dc.barChart("#AcciWeekDay");
   barAcciHour = dc.barChart("#AcciHour");
+  dataTable = dc.dataTable("#AccidentTable");
   ndx = crossfilter(tsvBody);
   all = ndx.groupAll();
+  coordFormatter = d3.format(".6f");
   monthDim = ndx.dimension(function (it) {
     return it["月"];
   });
@@ -166,6 +186,9 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
   });
   latDim = ndx.dimension(function (it) {
     return it.GoogleLat;
+  });
+  dataTableDim = ndx.dimension(function (it) {
+    return it.date;
   });
   initMap();
   acciMonth = monthDim.group().reduceCount();
@@ -281,6 +304,51 @@ d3.tsv("./accidentXY_light.tsv", function (err, tsvBody) {
     })
     .yAxis()
     .ticks(4);
+  dataTable
+    .dimension(dataTableDim)
+    .group(function () {
+      return "";
+    })
+    .size(20)
+    .columns([
+      {
+        label: "日期時間",
+        format: function (it) {
+          return formatDateTime(it);
+        },
+      },
+      {
+        label: "星期",
+        format: function (it) {
+          return it.week;
+        },
+      },
+      {
+        label: "死亡",
+        format: function (it) {
+          return it.dead;
+        },
+      },
+      {
+        label: "受傷",
+        format: function (it) {
+          return it["受傷"];
+        },
+      },
+      {
+        label: "座標 (緯, 經)",
+        format: function (it) {
+          return (
+            coordFormatter(it.GoogleLat) + ", " + coordFormatter(it.GoogleLng)
+          );
+        },
+      },
+    ])
+    .sortBy(function (it) {
+      return it.date;
+    })
+    .order(d3.descending)
+    .showGroups(false);
   dc.renderAll();
   updateGraph();
   navls = [

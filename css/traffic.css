@@ -37,3 +37,30 @@ svg text {
 .navidx {
   text-align: center;
 }
+.ctn-table {
+  width: 520px;
+  margin: 20px 40px 40px auto;
+  background-color: #2f2f2f;
+  padding: 12px 16px 16px;
+  border-radius: 6px;
+  box-shadow: 0 0 14px 1px rgba(0, 0, 0, 0.4);
+}
+.table-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  color: #fff;
+}
+#AccidentTable {
+  color: #fff;
+  margin-bottom: 0;
+}
+#AccidentTable > thead > tr > th,
+#AccidentTable > tbody > tr > td {
+  border-color: #555;
+}
+#AccidentTable > tbody > tr:nth-child(odd) {
+  background-color: #343434;
+}
+#AccidentTable > tbody > tr:nth-child(even) {
+  background-color: #2b2b2b;
+}
