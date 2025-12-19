@@ -3,6 +3,7 @@
   <head>
     <title>交通事故儀表板</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"
       rel="stylesheet"
@@ -16,18 +17,6 @@
       href="https://fonts.googleapis.com/css?family=Noto+Sans"
       rel="stylesheet"
     />
-
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-      crossorigin=""
-    />
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-      crossorigin=""
-    ></script>
     <script
       type="text/javascript"
       src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.12/d3.min.js"
@@ -40,69 +29,43 @@
       type="text/javascript"
       src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0/dc.min.js"
     ></script>
-    <script
-      type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="https://unpkg.com/prelude-ls@1.1.2/browser/prelude-browser-min.js"
-    ></script>
-    <script type="text/javascript">
-      (function (i, s, o, g, r, a, m) {
-        i["GoogleAnalyticsObject"] = r;
-        ((i[r] =
-          i[r] ||
-          function () {
-            (i[r].q = i[r].q || []).push(arguments);
-          }),
-          (i[r].l = 1 * new Date()));
-        ((a = s.createElement(o)), (m = s.getElementsByTagName(o)[0]));
-        a.async = 1;
-        a.src = g;
-        m.parentNode.insertBefore(a, m);
-      })(
-        window,
-        document,
-        "script",
-        "//www.google-analytics.com/analytics.js",
-        "ga",
-      );
-
-      ga("create", "UA-36523378-1", "auto");
-      ga("send", "pageview");
-    </script>
   </head>
   <body>
-    <div id="map"></div>
-    <div class="ctn-filter-all">
-      <div class="ctn-filter">
-        <div id="DeathMonth" class="filter fltMonth col-lg-3">
-          死亡／月份
+    <div class="page">
+      <header class="page-header">
+        <h1>本市 A1/A2 交通事故 — 肇事場所分布（113 年）</h1>
+        <p class="subtitle">
+          資料來源：本市 A1 及 A2 類道路交通事故－按肇事場所別 (113 年)
+        </p>
+      </header>
+      <section class="summary">
+        <div class="metric">
+          <div class="metric-label">事故總數</div>
+          <div id="TotalCount" class="metric-value">—</div>
         </div>
-        <div id="DeathWeekDay" class="filter fltWeek col-lg-3">
-          死亡／星期
+        <div class="metric">
+          <div class="metric-label">每轄區平均</div>
+          <div id="AveragePerBureau" class="metric-value">—</div>
         </div>
-        <div id="DeathHour" class="filter fltHour col-lg-3">死亡／時段</div>
+        <div class="metric">
+          <div class="metric-label">目前篩選</div>
+          <div id="FilterState" class="metric-value metric-small">全部資料</div>
+        </div>
+      </section>
+      <div class="charts">
+        <div class="chart-block">
+          <h3 class="chart-title">依肇事場所</h3>
+          <div id="LocationTypeChart"></div>
+        </div>
+        <div class="chart-block">
+          <h3 class="chart-title">依轄區</h3>
+          <div id="BureauChart"></div>
+        </div>
       </div>
-      <div class="ctn-filter">
-        <div id="AcciMonth" class="filter fltMonth col-lg-3">
-          事故／月份
-        </div>
-        <div id="AcciWeekDay" class="filter fltWeek col-lg-3">
-          事故／星期
-        </div>
-        <div id="AcciHour" class="filter fltHour col-lg-3">事故／時段</div>
+      <div class="ctn-table">
+        <h4 class="table-title">目前篩選的資料</h4>
+        <table id="AccidentTable" class="table table-condensed"></table>
       </div>
-    </div>
-    <div class="ctn-nav">
-      <h3 class="navttl">事故交叉篩選</h3>
-      <h5 class="navidx"></h5>
-      <p class="navtxt"></p>
-    </div>
-    <div class="ctn-table">
-      <h4 class="table-title">目前篩選的前 20 筆資料</h4>
-      <table id="AccidentTable" class="table table-condensed"></table>
     </div>
     <script type="text/javascript" src="./js/traffic.js"></script>
   </body>
